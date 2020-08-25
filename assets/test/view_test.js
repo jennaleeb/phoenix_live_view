@@ -955,6 +955,27 @@ describe("View + Component", function() {
       expect(beforeUpdate).toBe(true)
       expect(updated).toBe(true)
     })
+
+    test("does not add hook for elements without an ID", () => {
+      global.document.body.innerHTML = ""
+      let beforeUpdate = false
+      let updated = false
+      let Hooks = {
+        MyHook: {
+          beforeUpdate(){ beforeUpdate = true },
+          updated(){ updated = true},
+        }
+      }
+      let liveSocket = new LiveSocket("/live", Socket, {hooks: Hooks})
+      let el = liveViewDOM()
+      let view = new View(el, liveSocket)
+      stubChannel(view)
+      view.onJoin({rendered: {s: [`<span phx-hook="MyHook">Hello</span>`]}})
+      view.update({s: [`<span data-phx-ref="1" phx-hook="MyHook">Hello</span>`]}, [])
+
+      expect(beforeUpdate).toBe(false)
+      expect(updated).toBe(false)
+    })
   })
 })
 

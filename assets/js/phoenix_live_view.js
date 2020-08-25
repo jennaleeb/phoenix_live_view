@@ -1952,7 +1952,10 @@ export class View {
     let callbacks = this.liveSocket.getHookCallbacks(hookName)
 
     if(callbacks){
-      if(!el.id){ logError(`no DOM ID for hook "${hookName}". Hooks require a unique ID on each element.`, el)}
+      if(!el.id) {
+        logError(`no DOM ID for hook "${hookName}". Hooks require a unique ID on each element.`, el)
+        return
+      }
       let hook = new ViewHook(this, el, callbacks)
       this.viewHooks[ViewHook.elementID(hook.el)] = hook
       return hook
